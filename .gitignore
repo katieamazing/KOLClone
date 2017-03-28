@@ -1,7 +1,10 @@
 *.pyc
+*.elmi
+*.elmo
 *~
 __pycache__
 kenv
 db.sqlite3
 /static
+/advs/static/advs/elm-stuff
 .DS_Store
