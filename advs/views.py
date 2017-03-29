@@ -10,8 +10,9 @@ def damage(request):
 
     hp = selected_adv.damage()
     name = selected_adv.name
+    location = selected_adv.location
 
-    return render(request, 'advs/damage.json', {'hp': hp, 'name': name})
+    return render(request, 'advs/damage.json', {'hp': hp, 'name': name, 'location': location})
 
 def index(request):
     return render(request, 'advs/index.html', {})

@@ -1,1 +1,1 @@
-{ "damage": {{ hp }}, "name": "{{ name }}" }
+{ "damage": {{ hp }}, "name": "{{ name }}", "location": "{{location}}" }

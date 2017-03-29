@@ -12,15 +12,17 @@ import Json.Decode as Decode exposing (Decoder, field, succeed)
 --decoders
 decoderDamage : Decoder AdventureResult
 decoderDamage =
-  Decode.map2 AdventureResult
+  Decode.map3 AdventureResult
     (field "damage" Decode.int)
     (field "name" Decode.string)
+    (field "location" Decode.string)
 
 type alias Model =
   { equipped : Bool
   , adventures: Int
   , selected: Loc
   , name: String
+  , location: String
   , currency: Int
   , hitpoints: Int
   }
@@ -28,6 +30,7 @@ type alias Model =
 type alias AdventureResult =
   {damage : Int
   , name : String
+  , location: String
   }
 
 type Msg = NewGame | Equip | Rollover | Rest | SelectLoc Loc | AdventureLoc Loc
@@ -40,6 +43,7 @@ initialModel =
   , adventures = 40
   , selected = Main
   , name = ""
+  , location = "starting"
   , currency = 0
   , hitpoints = 10
   }
@@ -67,7 +71,8 @@ update msg model =
     Damage (Ok adv) ->
       ( { model |
           hitpoints = capHitpoints (model.hitpoints - adv.damage),
-          name = adv.name
+          name = adv.name,
+          location = adv.location
          }, Cmd.none )
     Damage (Err error) ->
       let
@@ -136,6 +141,7 @@ view model =
       ]
   , viewMap model
   , p [ ] [text ("Current Adventure: " ++ model.name)]
+  , p [ ] [text ("Current Location: " ++ model.location)]
   ]
 
 viewMap : Model -> Html Msg

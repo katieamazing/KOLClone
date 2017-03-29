@@ -12194,19 +12194,20 @@ var _user$project$KOLC$capAdventures = function (previous) {
 	return (_elm_lang$core$Native_Utils.cmp(previous, 200) > -1) ? 200 : previous;
 };
 var _user$project$KOLC$damageUrl = 'http://localhost:8000/advs';
-var _user$project$KOLC$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {equipped: a, adventures: b, selected: c, name: d, currency: e, hitpoints: f};
+var _user$project$KOLC$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {equipped: a, adventures: b, selected: c, name: d, location: e, currency: f, hitpoints: g};
 	});
-var _user$project$KOLC$AdventureResult = F2(
-	function (a, b) {
-		return {damage: a, name: b};
+var _user$project$KOLC$AdventureResult = F3(
+	function (a, b, c) {
+		return {damage: a, name: b, location: c};
 	});
-var _user$project$KOLC$decoderDamage = A3(
-	_elm_lang$core$Json_Decode$map2,
+var _user$project$KOLC$decoderDamage = A4(
+	_elm_lang$core$Json_Decode$map3,
 	_user$project$KOLC$AdventureResult,
 	A2(_elm_lang$core$Json_Decode$field, 'damage', _elm_lang$core$Json_Decode$int),
-	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string));
+	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'location', _elm_lang$core$Json_Decode$string));
 var _user$project$KOLC$Damage = function (a) {
 	return {ctor: 'Damage', _0: a};
 };
@@ -12349,7 +12350,7 @@ var _user$project$KOLC$viewMap = function (model) {
 	}
 };
 var _user$project$KOLC$Main = {ctor: 'Main'};
-var _user$project$KOLC$initialModel = {equipped: false, adventures: 40, selected: _user$project$KOLC$Main, name: '', currency: 0, hitpoints: 10};
+var _user$project$KOLC$initialModel = {equipped: false, adventures: 40, selected: _user$project$KOLC$Main, name: '', location: 'starting', currency: 0, hitpoints: 10};
 var _user$project$KOLC$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
@@ -12410,7 +12411,8 @@ var _user$project$KOLC$update = F2(
 							model,
 							{
 								hitpoints: _user$project$KOLC$capHitpoints(model.hitpoints - _p2.damage),
-								name: _p2.name
+								name: _p2.name,
+								location: _p2.location
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -12572,7 +12574,19 @@ var _user$project$KOLC$view = function (model) {
 									A2(_elm_lang$core$Basics_ops['++'], 'Current Adventure: ', model.name)),
 								_1: {ctor: '[]'}
 							}),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(_elm_lang$core$Basics_ops['++'], 'Current Location: ', model.location)),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
