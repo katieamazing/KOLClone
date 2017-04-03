@@ -8,6 +8,7 @@ import Collage
 import Random
 import Http
 import Json.Decode as Decode exposing (Decoder, field, succeed)
+import Json.Encode as Encode
 
 --decoders
 decoderDamage : Decoder AdventureResult
@@ -67,7 +68,7 @@ update msg model =
       ( { model
         | adventures = model.adventures - 1
         , currency = capCurrency (model.currency + 5)
-        }, takeDamage )
+        }, takeDamage loc)
     Damage (Ok adv) ->
       ( { model |
           hitpoints = capHitpoints (model.hitpoints - adv.damage),
@@ -83,17 +84,30 @@ update msg model =
 
 -- commands
 
-takeDamage : Cmd Msg
-takeDamage =
+takeDamage : Loc -> Cmd Msg
+takeDamage loc =
   --Random.generate Damage (Random.int 1 10)
   (decoderDamage)
-    |> Http.get damageUrl
+    |> Http.post damageUrl (makeBody (makeValue loc))
     |> Http.send Damage
 
 --
 damageUrl : String
 damageUrl =
-  "http://localhost:8000/advs"
+  "http://localhost:8000/advs/"
+
+makeValue : Loc -> Encode.Value
+makeValue loc =
+  let
+    locstring = toString loc
+  in
+    Encode.object
+      [ ("current_loc", Encode.string locstring) ]
+
+
+makeBody : Encode.Value -> Http.Body
+makeBody value =
+  Http.stringBody "application/json" (Encode.encode 0 value)
 
 capAdventures : Int -> Int
 capAdventures previous =
@@ -113,10 +127,10 @@ capCurrency previous =
 viewCharacter : Model -> Html Msg
 viewCharacter model =
   (Element.toHtml ( Collage.collage 60 100
-    ([ Collage.toForm ( Element.image 60 100 "img/base.gif" ) ]
+    ([ Collage.toForm ( Element.image 60 100 "/static/advs/img/base.gif" ) ]
     ++
       (if model.equipped then
-        [ Collage.toForm ( Element.image 60 100 "img/hat.gif" ) ]
+        [ Collage.toForm ( Element.image 60 100 "/static/advs/img/hat.gif" ) ]
       else
         [] )
       )
@@ -149,21 +163,21 @@ viewMap model =
   case model.selected of
     Main ->
       div [ ]
-          [ img [src "img/place1.gif", onClick (SelectLoc Beach) ] [ ]
-          , img [src "img/place3.gif", onClick (SelectLoc Forest) ] [ ]
-          , img [src "img/place2.gif", onClick (SelectLoc Town) ] [ ]
+          [ img [src "/static/advs/img/place1.gif", onClick (SelectLoc Beach) ] [ ]
+          , img [src "/static/advs/img/place3.gif", onClick (SelectLoc Forest) ] [ ]
+          , img [src "/static/advs/img/place2.gif", onClick (SelectLoc Town) ] [ ]
           ]
     Beach ->
       div [ ]
-          [ img [src "img/place1.gif", onClick (AdventureLoc Beach) ] [ ]
+          [ img [src "/static/advs/img/place1.gif", onClick (AdventureLoc Beach) ] [ ]
           ]
     Forest ->
       div [ ]
-          [ img [src "img/place3.gif", onClick (AdventureLoc Forest) ] [ ]
+          [ img [src "/static/advs/img/place3.gif", onClick (AdventureLoc Forest) ] [ ]
           ]
     Town ->
       div [ ]
-          [ img [src "img/place2.gif", onClick (AdventureLoc Town) ] [ ]
+          [ img [src "/static/advs/img/place2.gif", onClick (AdventureLoc Town) ] [ ]
           ]
 
 

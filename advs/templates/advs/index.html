@@ -1,2 +1,29 @@
 {% load static %}
-{% static "advs/index.html" %}
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static "advs/style.css" %}">
+    <script src="{% static "advs/kolc.js" %}"></script>
+  </head>
+  <body>
+    {% csrf_token %}
+    <script>
+
+    //ref: http://stackoverflow.com/questions/24196140/adding-x-csrf-token-header-globally-to-all-instances-of-xmlhttprequest/24196317#24196317
+    (function() {
+      var send = XMLHttpRequest.prototype.send,
+          token = document.querySelector('input').value;
+      console.dir(token);
+      XMLHttpRequest.prototype.send = function(data) {
+          this.setRequestHeader('X-CSRFToken', token);
+          return send.apply(this, arguments);
+      };
+    }());
+
+      Elm.KOLC.fullscreen();
+    </script>
+  </body>
+</html>
