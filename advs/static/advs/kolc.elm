@@ -230,7 +230,7 @@ viewMode model =
               ]
         Inventory ->
           ul []
-            (List.map (\l -> li [] [ text l ]) model.allitems)
+            (List.map (\l -> li [] [ text l, img [src "/static/advs/img/place1.gif"] [] ]) model.allitems)
         Beach ->
           div [ ]
               [ img [src "/static/advs/img/place1.gif", onClick (AdventureLoc Beach) ] [ ]
